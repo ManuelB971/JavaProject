@@ -1,6 +1,6 @@
 # JavaProject le repo des boss
 
-# 🏨 Projet Java -- Système de Gestion d'Hôtel
+# Projet Java -- Système de Gestion d'Hôtel
 
 Ce projet consiste à développer une application Java de gestion complète
 d'un hôtel avec gestion des chambres, des clients, des réservations, des
@@ -42,7 +42,7 @@ src/
 ```
 ------------------------------------------------------------------------
 
-## ✅ Phases du Projet
+## Phases du Projet
 
 ### Phase 1 : Classes de base
 
@@ -62,7 +62,7 @@ src/
 
 ------------------------------------------------------------------------
 
-## ✅ Fonctionnalités
+## Fonctionnalités
 
 -   Gestion chambres, clients, réservations
 -   Ajout services
@@ -72,7 +72,7 @@ src/
 
 ------------------------------------------------------------------------
 
-## 👨‍💻 Répartition du Travail
+## Répartition du Travail
 
 Projet réalisé en équipe avec répartition.
 | Phase                 | Dev 1  - Code                | Dev 2 - Code                | Dev 3 - Code                     | Dev 4 - Code                  | Tests Croisés (TOUS)                                          |
