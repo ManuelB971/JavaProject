@@ -3,7 +3,7 @@
 *.iml
 *.iws
 *.ipr
-
+*.xml
 # Copilot files
 .idea/copilot.data.migration.*.xml
 .idea/copilot.data.*.xml

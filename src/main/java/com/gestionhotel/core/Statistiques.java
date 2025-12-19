@@ -1,4 +1,4 @@
-package com.gestionhotel.core;
+package main.java.com.gestionhotel.core;
 
 public class Statistiques {
     // Implementation de Statistiques

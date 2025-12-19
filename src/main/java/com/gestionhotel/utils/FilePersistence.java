@@ -1,4 +1,4 @@
-package com.gestionhotel.utils;
+package main.java.com.gestionhotel.utils;
 
 public class FilePersistence {
     // Implementation de FilePersistence
