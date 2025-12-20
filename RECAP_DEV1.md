@@ -121,5 +121,58 @@
 
 ---
 
-## Prochaines étapes (Phase 4)
-- Phase 4 : MenuPrincipal + chambres/clients
+## Phase 4 : UI + Bonus (Terminé ✅)
+
+### Ce qui a été fait :
+- Implémentation complète de `MenuPrincipal` dans `com.gestionhotel.ui.MenuPrincipal`.
+- Menu principal avec 6 options :
+  1. Gestion des Chambres
+  2. Gestion des Clients
+  3. Gestion des Réservations
+  4. Gestion des Services
+  5. Statistiques et Rapports
+  6. Quitter
+
+### Sous-menu 1 : Gestion des Chambres (Dev 1)
+- Ajouter une chambre (Simple/Double/Suite)
+- Afficher toutes les chambres
+- Afficher les chambres disponibles
+- Rechercher par numéro
+- Rechercher par type
+- Rechercher par prix maximum
+
+### Sous-menu 2 : Gestion des Clients (Dev 1)
+- Ajouter un client (avec validation email)
+- Afficher tous les clients
+- Rechercher un client (par numéro ou email)
+- Modifier les informations d'un client
+
+### Sous-menu 3 : Gestion des Réservations
+- Créer une réservation
+- Afficher toutes les réservations
+- Afficher les réservations d'un client
+- Rechercher une réservation
+- Ajouter des services à une réservation
+- Annuler une réservation
+- Terminer une réservation (check-out)
+
+### Sous-menu 4 : Gestion des Services
+- Afficher les services disponibles
+- Ajouter un nouveau service
+- Modifier un service
+
+### Sous-menu 5 : Statistiques
+- Afficher le chiffre d'affaires
+- Afficher le taux d'occupation
+- Afficher les statistiques complètes
+
+---
+
+## Résumé Dev 1 (Mika) - Toutes les phases terminées ✅
+
+| Phase | Tâche | Statut |
+|-------|-------|--------|
+| Phase 1 | Classe abstraite Chambre + interfaces | ✅ |
+| Phase 2 | Reservation (prix/nuits/services) | ✅ |
+| Phase 3 | Gestion chambres (recherche/dispo) | ✅ |
+| Phase 4 | MenuPrincipal + chambres/clients | ✅ |
