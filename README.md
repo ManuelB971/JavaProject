@@ -75,11 +75,11 @@ src/
 ## Répartition du Travail
 
 Projet réalisé en équipe avec répartition.
-| Phase                 | Dev 1  - Code                | Dev 2 - Code                | Dev 3 - Code                     | Dev 4 - Code                  | Tests Croisés (TOUS)                                          |
-| --------------------- | ---------------------------------- | --------------------------- | -------------------------------- | ----------------------------- | ------------------------------------------------------------- |
-| Phase 1: Model        | Chambreabstraite + interfaces      | ChambreSimple/Double        | Suite + Client(email validation) | Service + DateUtils           | D1 teste D2, D2 teste D3, D3 teste D4, D4 teste D1            |
-| Phase 2: Réservations | Reservation(prix/nuits/services)   | Intégration Client/Chambre  | Statut + annulation              | ValidationUtils + Exceptions  | Rotation : D1 teste D3, D2 teste D4, D3 teste D1, D4 teste D2 |
-| Phase 3: Hotel Core   | Gestion chambres (recherche/dispo) | Gestion clients             | Réservations (créer/afficher)    | Statistiques +FilePersistence | Tous testent Hotel ensemble (intégration)                     |
-| Phase 4: UI + Bonus   | MenuPrincipal + chambres/clients   | Menus réservations/services | Stats + try-catch global         | Bonus fidélité + Swing        | Cross-tests UI + démo collective                              |
+| Phase                 | Mika (Dev 1)                  | Yann (Dev 2)                  | Manuel (Dev 3)                     | Dominique (Dev 4)               | Tests Croisés (TOUS)                                          |
+| --------------------- | ----------------------------- | ----------------------------- | --------------------------------- | ------------------------------- | ------------------------------------------------------------- |
+| Phase 1: Model        | Chambre abstraite + interfaces | ChambreSimple/Double          | Suite + Client(email validation)  | Service + DateUtils              | D1 teste D2, D2 teste D3, D3 teste D4, D4 teste D1            |
+| Phase 2: Réservations | Reservation(prix/nuits/services) | Intégration Client/Chambre    | Statut + annulation               | ValidationUtils + Exceptions     | Rotation : D1 teste D3, D2 teste D4, D3 teste D1, D4 teste D2 |
+| Phase 3: Hotel Core   | Gestion chambres (recherche/dispo) | Gestion clients                | Réservations (créer/afficher)      | Statistiques + FilePersistence   | Tous testent Hotel ensemble (intégration)                     |
+| Phase 4: UI + Bonus   | MenuPrincipal + chambres/clients | Menus réservations/services    | Stats + try-catch global          | Bonus fidélité + Swing          | Cross-tests UI + démo collective                              |
 
 ------------------------------------------------------------------------
