@@ -80,6 +80,46 @@
 
 ---
 
-## Prochaines étapes (Phase 3 & 4)
-- Phase 3 : Gestion chambres (recherche/dispo)
+## Phase 3 : Hotel Core (Terminé ✅)
+
+### Ce qui a été fait :
+- Implémentation complète de la classe `Hotel` dans `com.gestionhotel.core.Hotel`.
+- Attributs :
+  - `nom` (String)
+  - `adresse` (String)
+  - `chambres` (ArrayList<Chambre>)
+  - `clients` (ArrayList<Client>)
+  - `reservations` (ArrayList<Reservation>)
+  - `servicesDisponibles` (ArrayList<Service>)
+
+### Méthodes de gestion des chambres (Dev 1) :
+- `ajouterChambre(Chambre c)` : ajoute une chambre (vérifie doublon).
+- `afficherToutesLesChambres()` : affiche toutes les chambres.
+- `afficherChambresDisponibles()` : affiche les chambres libres.
+- `getChambresDisponibles()` : retourne ArrayList des chambres libres.
+- `rechercherChambre(int numero)` : recherche par numéro.
+- `rechercherChambresParType(String type)` : recherche par type (Simple/Double/Suite).
+- `rechercherChambresParPrix(double prixMax)` : recherche par prix max.
+
+### Méthodes de gestion des clients (Dev 2) :
+- `ajouterClient(Client c)` : ajoute un client.
+- `afficherTousLesClients()` : affiche tous les clients.
+- `rechercherClient(int numero)` : recherche par numéro.
+- `rechercherClientParEmail(String email)` : recherche par email.
+
+### Méthodes de gestion des réservations (Dev 3) :
+- `creerReservation(Client, Chambre, dateDebut, dateFin)` : crée une réservation.
+- `afficherToutesLesReservations()` : affiche toutes les réservations.
+- `afficherReservationsClient(Client c)` : affiche les réservations d'un client.
+- `rechercherReservation(int numero)` : recherche par numéro.
+- `annulerReservation(int numero)` : annule une réservation.
+- `terminerReservation(int numero)` : termine une réservation (check-out).
+
+### Méthodes de gestion des services :
+- `ajouterService(Service s)` : ajoute un service.
+- `afficherServices()` : affiche tous les services.
+
+---
+
+## Prochaines étapes (Phase 4)
 - Phase 4 : MenuPrincipal + chambres/clients
