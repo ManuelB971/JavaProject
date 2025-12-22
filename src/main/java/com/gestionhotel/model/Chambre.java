@@ -14,6 +14,7 @@ public abstract class Chambre {
     protected double prixParNuit; // Tarif par nuit
     protected boolean occupee; // Statut d'occupation (true = occupée, false = libre)
     protected int capacite; // Nombre maximum de personnes
+    protected Client client; // Client actuellement occupant la chambre
 
     /**
      * Constructeur complet pour initialiser une chambre.
@@ -27,6 +28,7 @@ public abstract class Chambre {
         this.prixParNuit = prixParNuit;
         this.capacite = capacite;
         this.occupee = false; // Par défaut, une chambre est libre à la création
+        this.client = null; // Aucun client au départ
     }
 
     // ===========================
@@ -63,6 +65,14 @@ public abstract class Chambre {
 
     public void setCapacite(int capacite) {
         this.capacite = capacite;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     // ===========================
