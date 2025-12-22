@@ -7,35 +7,17 @@ import java.time.LocalDate;
 /**
  * Classe représentant une réservation d'hôtel.
  * Gère les informations de réservation incluant client, chambre, dates et services.
- * Implémente une gestion robuste des statuts et de l'annulation.
+ * Implémente une gestion robuste des statuts et de l'annulation (Phase 2 - Dev 3).
  * 
  * Statuts possibles :
- * - EN_COURS : réservation en cours de traitement
- * - CONFIRMEE : réservation confirmée par le client
- * - ANNULEE : réservation annulée
- * - TERMINEES : séjour terminé (check-out effectué)
+ * - "En cours" : réservation en cours de traitement
+ * - "Confirmée" : réservation confirmée par le client
+ * - "Annulée" : réservation annulée
+ * - "Terminée" : séjour terminé (check-out effectué)
  * 
  * @author Dev 1 & Dev 3
  */
 public class Reservation {
-
-    // Énumération des statuts possibles
-    public enum Statut {
-        EN_COURS("En cours"),
-        CONFIRMEE("Confirmée"),
-        ANNULEE("Annulée"),
-        TERMINEES("Terminée");
-        
-        private final String label;
-        
-        Statut(String label) {
-            this.label = label;
-        }
-        
-        public String getLabel() {
-            return label;
-        }
-    }
 
     // Attribut statique pour l'auto-incrémentation du numéro de réservation
     private static int compteurReservation = 1;
@@ -47,9 +29,9 @@ public class Reservation {
     private String dateDebut;      // Format "jj/mm/aaaa"
     private String dateFin;        // Format "jj/mm/aaaa"
     private ArrayList<Service> services;
-    private Statut statut;         // Énumération des statuts
-    private String dateAnnulation; // Date d'annulation si applicable
-    private String raison;         // Raison de l'annulation
+    private String statut;         // "En cours", "Confirmée", "Annulée", "Terminée"
+    private String dateAnnulation; // Date d'annulation si applicable (Phase 2)
+    private String raison;         // Raison de l'annulation (Phase 2)
 
     /**
      * Constructeur complet pour créer une nouvelle réservation.
@@ -66,7 +48,7 @@ public class Reservation {
         this.dateDebut = dateDebut;
         this.dateFin = dateFin;
         this.services = new ArrayList<>();
-        this.statut = Statut.EN_COURS;
+        this.statut = "En cours";
         this.dateAnnulation = null;
         this.raison = null;
         
@@ -122,15 +104,11 @@ public class Reservation {
         this.services = services;
     }
 
-    public Statut getStatut() {
+    public String getStatut() {
         return statut;
     }
 
-    public String getStatutLabel() {
-        return statut.getLabel();
-    }
-
-    public void setStatut(Statut statut) {
+    public void setStatut(String statut) {
         this.statut = statut;
     }
 
@@ -213,26 +191,42 @@ public class Reservation {
     }
 
     /**
-     * Annule la réservation avec validation des conditions.
+     * Confirme la réservation.
+     * Passage du statut "En cours" à "Confirmée".
+     * 
+     * @return true si la confirmation a réussi, false sinon
+     */
+    public boolean confirmer() {
+        if (!this.statut.equals("En cours")) {
+            System.out.println("Erreur : Seule une réservation EN_COURS peut être confirmée.");
+            return false;
+        }
+        this.statut = "Confirmée";
+        return true;
+    }
+
+    /**
+     * Annule la réservation avec validation des conditions (Phase 2 - Dev 3).
      * Permet l'annulation seulement si la réservation est EN_COURS ou CONFIRMEE.
+     * Enregistre la date et raison de l'annulation.
      * 
      * @param raison Motif de l'annulation (optionnel)
      * @return true si l'annulation a réussi, false sinon
      */
     public boolean annuler(String raison) {
         // Validation : on ne peut annuler que si la réservation est EN_COURS ou CONFIRMEE
-        if (this.statut == Statut.ANNULEE) {
+        if (this.statut.equals("Annulée")) {
             System.out.println("Erreur : Cette réservation est déjà annulée.");
             return false;
         }
         
-        if (this.statut == Statut.TERMINEES) {
+        if (this.statut.equals("Terminée")) {
             System.out.println("Erreur : Impossible d'annuler une réservation déjà terminée.");
             return false;
         }
         
         // Enregistrer les informations d'annulation
-        this.statut = Statut.ANNULEE;
+        this.statut = "Annulée";
         this.dateAnnulation = DateUtils.formaterDateFR(LocalDate.now());
         this.raison = raison != null ? raison : "Non spécifiée";
         
@@ -252,78 +246,69 @@ public class Reservation {
     }
 
     /**
-     * Vérifie si la réservation peut être annulée.
+     * Vérifie si la réservation peut être annulée (Phase 2 - Dev 3).
      * 
      * @return true si l'annulation est possible, false sinon
      */
     public boolean peutEtreAnnulee() {
-        return (this.statut == Statut.EN_COURS || this.statut == Statut.CONFIRMEE);
-    }
-
-    /**
-     * Confirme la réservation.
-     * Passage du statut EN_COURS à CONFIRMEE.
-     * 
-     * @return true si la confirmation a réussi, false sinon
-     */
-    public boolean confirmer() {
-        if (this.statut != Statut.EN_COURS) {
-            System.out.println("Erreur : Seule une réservation EN_COURS peut être confirmée.");
-            return false;
-        }
-        this.statut = Statut.CONFIRMEE;
-        return true;
+        return (this.statut.equals("En cours") || this.statut.equals("Confirmée"));
     }
 
     /**
      * Termine la réservation (check-out) et libère la chambre.
-     * Passage du statut CONFIRMEE à TERMINEES.
+     * Passage du statut à "Terminée".
      * 
      * @return true si la fin a réussi, false sinon
      */
     public boolean terminer() {
-        if (this.statut == Statut.ANNULEE) {
+        if (this.statut.equals("Annulée")) {
             System.out.println("Erreur : Impossible de terminer une réservation annulée.");
             return false;
         }
         
-        if (this.statut == Statut.TERMINEES) {
+        if (this.statut.equals("Terminée")) {
             System.out.println("Erreur : Cette réservation est déjà terminée.");
             return false;
         }
         
-        this.statut = Statut.TERMINEES;
+        this.statut = "Terminée";
         this.chambre.setOccupee(false);
         return true;
     }
 
     /**
-     * Vérifie si la réservation est annulée.
+     * Vérifie si la réservation est annulée (Phase 2 - Dev 3).
      * 
      * @return true si le statut est ANNULEE
      */
     public boolean estAnnulee() {
-        return this.statut == Statut.ANNULEE;
+        return this.statut.equals("Annulée");
     }
 
     /**
-     * Vérifie si la réservation est confirmée.
+     * Vérifie si la réservation est confirmée (Phase 2 - Dev 3).
      * 
      * @return true si le statut est CONFIRMEE
      */
     public boolean estConfirmee() {
-        return this.statut == Statut.CONFIRMEE;
+        return this.statut.equals("Confirmée");
     }
 
     /**
-     * Vérifie si la réservation est terminée.
+     * Vérifie si la réservation est terminée (Phase 2 - Dev 3).
      * 
      * @return true si le statut est TERMINEES
      */
     public boolean estTerminee() {
-        return this.statut == Statut.TERMINEES;
+        return this.statut.equals("Terminée");
     }
 
+    /**
+     * Retourne une description textuelle complète de la réservation.
+     * Inclut les infos d'annulation si applicable.
+     * 
+     * @return Chaîne contenant toutes les informations de la réservation
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -332,10 +317,10 @@ public class Reservation {
         sb.append("Chambre: ").append(chambre.getType()).append(" n°").append(chambre.getNumero()).append("\n");
         sb.append("Période: du ").append(dateDebut).append(" au ").append(dateFin);
         sb.append(" (").append(calculerNombreNuits()).append(" nuits)\n");
-        sb.append("Statut: ").append(statut.getLabel()).append("\n");
+        sb.append("Statut: ").append(statut).append("\n");
         
-        // Afficher les infos d'annulation si applicable
-        if (statut == Statut.ANNULEE) {
+        // Afficher les infos d'annulation si applicable (Phase 2 - Dev 3)
+        if (statut.equals("Annulée")) {
             sb.append("Date d'annulation: ").append(dateAnnulation != null ? dateAnnulation : "N/A").append("\n");
             sb.append("Raison: ").append(raison != null ? raison : "Non spécifiée").append("\n");
         }
