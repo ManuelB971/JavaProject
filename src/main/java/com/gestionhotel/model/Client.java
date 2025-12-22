@@ -1,7 +1,7 @@
-
 package main.java.com.gestionhotel.model;
 
 import java.util.regex.Pattern;
+import java.util.HashMap;
 
 public class Client {
     
@@ -14,6 +14,7 @@ public class Client {
     private String prenom;
     private String email;
     private String telephone;
+    private HashMap<Integer, Chambre> chambresOccupees; // Numéro chambre -> Chambre occupée
 
     /**
      * Constructeur complet pour créer un nouveau client.
@@ -29,6 +30,7 @@ public class Client {
         this.prenom = prenom;
         this.email = email;
         this.telephone = telephone;
+        this.chambresOccupees = new HashMap<>();
     }
 
     // GETTERS & SETTERS
@@ -67,6 +69,28 @@ public class Client {
 
     public void setTelephone(String telephone) {
         this.telephone = telephone;
+    }
+
+    public HashMap<Integer, Chambre> getChambresOccupees() {
+        return chambresOccupees;
+    }
+
+    public void ajouterChambre(Chambre chambre) {
+        if (chambre != null) {
+            chambresOccupees.put(chambre.getNumero(), chambre);
+        }
+    }
+
+    public void retirerChambre(int numeroChambre) {
+        chambresOccupees.remove(numeroChambre);
+    }
+
+    public Chambre obtenirChambre(int numeroChambre) {
+        return chambresOccupees.get(numeroChambre);
+    }
+
+    public boolean occupeChambre(int numeroChambre) {
+        return chambresOccupees.containsKey(numeroChambre);
     }
 
     // MÉTHODES MÉTIER
