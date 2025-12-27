@@ -230,33 +230,64 @@ public class Hotel {
     // ===========================
 
     /**
-     * Crée une nouvelle réservation.
+     * Crée une nouvelle réservation avec validation complète (Phase 3 - Dev 3).
+     * Vérifie que la chambre est disponible et les dates sont valides.
      * 
      * @param client    Le client
      * @param chambre   La chambre
-     * @param dateDebut Date de début
-     * @param dateFin   Date de fin
-     * @return La réservation créée ou null si la chambre est occupée
+     * @param dateDebut Date de début (format jj/mm/aaaa)
+     * @param dateFin   Date de fin (format jj/mm/aaaa)
+     * @return La réservation créée ou null en cas d'erreur
      */
     public Reservation creerReservation(Client client, Chambre chambre, String dateDebut, String dateFin) {
+        // Validation 1 : Chambre occupée
         if (chambre.isOccupee()) {
             System.out.println("Erreur: La chambre n°" + chambre.getNumero() + " est déjà occupée.");
             return null;
         }
+        
+        // Validation 2 : Client valide
+        if (client == null) {
+            System.out.println("Erreur: Le client est invalide.");
+            return null;
+        }
+        
+        // Validation 3 : Dates valides (format et logique)
+        try {
+            java.time.LocalDate debut = com.gestionhotel.utils.DateUtils.parserDateFR(dateDebut);
+            java.time.LocalDate fin = com.gestionhotel.utils.DateUtils.parserDateFR(dateFin);
+            
+            if (!debut.isBefore(fin)) {
+                System.out.println("Erreur: La date de départ doit être après la date d'arrivée.");
+                return null;
+            }
+            
+            if (!com.gestionhotel.utils.DateUtils.estPeriodeValide(debut, fin)) {
+                System.out.println("Erreur: La période de réservation est invalide.");
+                return null;
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erreur: " + e.getMessage());
+            return null;
+        }
+        
+        // Créer la réservation
         Reservation reservation = new Reservation(client, chambre, dateDebut, dateFin);
         this.reservations.add(reservation);
+        
+        System.out.println("✓ Réservation n°" + reservation.getNumeroReservation() + " créée avec succès.");
         return reservation;
     }
 
     /**
-     * Affiche toutes les réservations.
+     * Affiche toutes les réservations avec filtrage optionnel (Phase 3 - Dev 3).
      */
     public void afficherToutesLesReservations() {
         if (reservations.isEmpty()) {
             System.out.println("Aucune réservation enregistrée.");
             return;
         }
-        System.out.println("=== Liste des réservations ===");
+        System.out.println("=== Liste complète des réservations (" + reservations.size() + ") ===");
         for (Reservation reservation : reservations) {
             System.out.println(reservation);
             System.out.println("---");
@@ -264,13 +295,13 @@ public class Hotel {
     }
 
     /**
-     * Affiche les réservations d'un client.
+     * Affiche les réservations d'un client spécifique (Phase 3 - Dev 3).
      * 
      * @param client Le client
      */
     public void afficherReservationsClient(Client client) {
         boolean found = false;
-        System.out.println("=== Réservations de " + client.getNomComplet() + " ===");
+        System.out.println("=== Réservations de " + client.getNomComplet() + " (n°" + client.getNumeroClient() + ") ===");
         for (Reservation reservation : reservations) {
             if (reservation.getClient().getNumeroClient() == client.getNumeroClient()) {
                 System.out.println(reservation);
@@ -284,7 +315,53 @@ public class Hotel {
     }
 
     /**
-     * Recherche une réservation par son numéro.
+     * Affiche les réservations actives (EN_COURS ou CONFIRMEES) (Phase 3 - Dev 3).
+     */
+    public void afficherReservationsActives() {
+        ArrayList<Reservation> actives = new ArrayList<>();
+        for (Reservation r : reservations) {
+            if (!r.getStatut().equals("Annulée") && !r.getStatut().equals("Terminée")) {
+                actives.add(r);
+            }
+        }
+        
+        if (actives.isEmpty()) {
+            System.out.println("Aucune réservation active.");
+            return;
+        }
+        System.out.println("=== Réservations actives (" + actives.size() + ") ===");
+        for (Reservation r : actives) {
+            System.out.println("Réservation n°" + r.getNumeroReservation() + " - " + 
+                             r.getClient().getNomComplet() + " - Chambre " + r.getChambre().getNumero() + 
+                             " (" + r.getChambre().getType() + ") - Statut: " + r.getStatut());
+        }
+    }
+
+    /**
+     * Affiche les réservations annulées (Phase 3 - Dev 3).
+     */
+    public void afficherReservationsAnnulees() {
+        ArrayList<Reservation> annulees = new ArrayList<>();
+        for (Reservation r : reservations) {
+            if (r.getStatut().equals("Annulée")) {
+                annulees.add(r);
+            }
+        }
+        
+        if (annulees.isEmpty()) {
+            System.out.println("Aucune réservation annulée.");
+            return;
+        }
+        System.out.println("=== Réservations annulées (" + annulees.size() + ") ===");
+        for (Reservation r : annulees) {
+            System.out.println("Réservation n°" + r.getNumeroReservation() + " - " + 
+                             r.getClient().getNomComplet() + " - Annulée le " + r.getDateAnnulation() + 
+                             " - Raison: " + r.getRaison());
+        }
+    }
+
+    /**
+     * Recherche une réservation par son numéro (Phase 3 - Dev 3).
      * 
      * @param numero Le numéro de réservation
      * @return La réservation trouvée ou null
@@ -299,33 +376,85 @@ public class Hotel {
     }
 
     /**
-     * Annule une réservation par son numéro.
+     * Annule une réservation par son numéro avec gestion robuste (Phase 3 - Dev 3).
      * 
      * @param numero Le numéro de réservation
+     * @param raison Motif de l'annulation (optionnel)
      */
-    public void annulerReservation(int numero) {
+    public void annulerReservation(int numero, String raison) {
         Reservation reservation = rechercherReservation(numero);
         if (reservation != null) {
-            reservation.annuler();
-            System.out.println("Réservation n°" + numero + " annulée avec succès.");
+            boolean succes = reservation.annuler(raison);
+            if (succes) {
+                System.out.println("✓ Réservation n°" + numero + " annulée avec succès.");
+            } else {
+                System.out.println("✗ Impossible d'annuler la réservation n°" + numero);
+            }
         } else {
-            System.out.println("Réservation n°" + numero + " non trouvée.");
+            System.out.println("Erreur: Réservation n°" + numero + " non trouvée.");
         }
     }
 
     /**
-     * Termine une réservation (check-out).
+     * Annule une réservation sans motif spécifique (Phase 3 - Dev 3).
+     * 
+     * @param numero Le numéro de réservation
+     */
+    public void annulerReservation(int numero) {
+        annulerReservation(numero, null);
+    }
+
+    /**
+     * Termine une réservation (check-out) avec validation (Phase 3 - Dev 3).
      * 
      * @param numero Le numéro de réservation
      */
     public void terminerReservation(int numero) {
         Reservation reservation = rechercherReservation(numero);
         if (reservation != null) {
-            reservation.terminer();
-            System.out.println("Réservation n°" + numero + " terminée. Chambre libérée.");
+            boolean succes = reservation.terminer();
+            if (succes) {
+                System.out.println("✓ Réservation n°" + numero + " terminée. Chambre libérée.");
+            } else {
+                System.out.println("✗ Impossible de terminer la réservation n°" + numero);
+            }
         } else {
-            System.out.println("Réservation n°" + numero + " non trouvée.");
+            System.out.println("Erreur: Réservation n°" + numero + " non trouvée.");
         }
+    }
+
+    /**
+     * Confirme une réservation (Phase 3 - Dev 3).
+     * 
+     * @param numero Le numéro de réservation
+     */
+    public void confirmerReservation(int numero) {
+        Reservation reservation = rechercherReservation(numero);
+        if (reservation != null) {
+            boolean succes = reservation.confirmer();
+            if (succes) {
+                System.out.println("✓ Réservation n°" + numero + " confirmée.");
+            } else {
+                System.out.println("✗ Impossible de confirmer la réservation n°" + numero);
+            }
+        } else {
+            System.out.println("Erreur: Réservation n°" + numero + " non trouvée.");
+        }
+    }
+
+    /**
+     * Retourne le nombre de réservations en cours (Phase 3 - Dev 3).
+     * 
+     * @return Nombre de réservations actives
+     */
+    public int getNombreReservationsActives() {
+        int count = 0;
+        for (Reservation r : reservations) {
+            if (!r.getStatut().equals("Annulée") && !r.getStatut().equals("Terminée")) {
+                count++;
+            }
+        }
+        return count;
     }
 
     // ===========================
