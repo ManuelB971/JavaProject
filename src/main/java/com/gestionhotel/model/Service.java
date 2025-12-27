@@ -1,4 +1,4 @@
-package main.java.com.gestionhotel.model;
+package com.gestionhotel.model;
 
 /**
  * Classe représentant un service hôtelier disponible pour les clients.

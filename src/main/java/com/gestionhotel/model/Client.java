@@ -1,4 +1,4 @@
-package main.java.com.gestionhotel.model;
+package com.gestionhotel.model;
 
 import java.util.regex.Pattern;
 import java.util.HashMap;

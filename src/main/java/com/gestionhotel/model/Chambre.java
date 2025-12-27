@@ -1,4 +1,4 @@
-package main.java.com.gestionhotel.model;
+package com.gestionhotel.model;
 
 /**
  * Classe abstraite représentant une chambre d'hôtel générique.

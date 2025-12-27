@@ -1,10 +1,11 @@
-package main.java.com.gestionhotel.core;
+package com.gestionhotel.core;
 
 import java.util.ArrayList;
-import main.java.com.gestionhotel.model.Chambre;
-import main.java.com.gestionhotel.model.Client;
-import main.java.com.gestionhotel.model.Reservation;
-import main.java.com.gestionhotel.model.Service;
+import com.gestionhotel.model.Chambre;
+import com.gestionhotel.model.Client;
+import com.gestionhotel.model.Reservation;
+import com.gestionhotel.model.Service;
+import com.gestionhotel.model.GestionnaireClient;
 
 /**
  * Classe principale représentant l'hôtel.
@@ -21,6 +22,7 @@ public class Hotel {
     private ArrayList<Client> clients;
     private ArrayList<Reservation> reservations;
     private ArrayList<Service> servicesDisponibles;
+    private GestionnaireClient gestionnaireClient;
 
     /**
      * Constructeur de l'hôtel.
@@ -35,6 +37,7 @@ public class Hotel {
         this.clients = new ArrayList<>();
         this.reservations = new ArrayList<>();
         this.servicesDisponibles = new ArrayList<>();
+        this.gestionnaireClient = new GestionnaireClient();
     }
 
     // ===========================
@@ -190,6 +193,7 @@ public class Hotel {
      */
     public void ajouterClient(Client client) {
         if (client != null) {
+            gestionnaireClient.ajouterClient(client);
             this.clients.add(client);
         }
     }
@@ -198,14 +202,7 @@ public class Hotel {
      * Affiche tous les clients de l'hôtel.
      */
     public void afficherTousLesClients() {
-        if (clients.isEmpty()) {
-            System.out.println("Aucun client enregistré.");
-            return;
-        }
-        System.out.println("=== Liste des clients ===");
-        for (Client client : clients) {
-            System.out.println(client);
-        }
+        gestionnaireClient.afficherTousLesClients();
     }
 
     /**
@@ -215,12 +212,7 @@ public class Hotel {
      * @return Le client trouvé ou null
      */
     public Client rechercherClient(int numero) {
-        for (Client client : clients) {
-            if (client.getNumeroClient() == numero) {
-                return client;
-            }
-        }
-        return null;
+        return gestionnaireClient.obtenirClient(numero);
     }
 
     /**
@@ -230,12 +222,7 @@ public class Hotel {
      * @return Le client trouvé ou null
      */
     public Client rechercherClientParEmail(String email) {
-        for (Client client : clients) {
-            if (client.getEmail().equalsIgnoreCase(email)) {
-                return client;
-            }
-        }
-        return null;
+        return gestionnaireClient.rechercherParEmail(email);
     }
 
     // ===========================

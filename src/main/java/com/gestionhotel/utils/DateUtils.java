@@ -1,4 +1,4 @@
-package main.java.com.gestionhotel.utils;
+package com.gestionhotel.utils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

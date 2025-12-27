@@ -1,15 +1,15 @@
-package main.java.com.gestionhotel.ui;
+package com.gestionhotel.ui;
 
 import java.util.ArrayList;
 import java.util.Scanner;
-import main.java.com.gestionhotel.core.Hotel;
-import main.java.com.gestionhotel.model.Chambre;
-import main.java.com.gestionhotel.model.ChambreSimple;
-import main.java.com.gestionhotel.model.ChambreDouble;
-import main.java.com.gestionhotel.model.Suite;
-import main.java.com.gestionhotel.model.Client;
-import main.java.com.gestionhotel.model.Reservation;
-import main.java.com.gestionhotel.model.Service;
+import com.gestionhotel.core.Hotel;
+import com.gestionhotel.model.Chambre;
+import com.gestionhotel.model.ChambreSimple;
+import com.gestionhotel.model.ChambreDouble;
+import com.gestionhotel.model.Suite;
+import com.gestionhotel.model.Client;
+import com.gestionhotel.model.Reservation;
+import com.gestionhotel.model.Service;
 
 /**
  * Classe principale pour l'interface utilisateur en console.

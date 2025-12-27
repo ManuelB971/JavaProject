@@ -1,9 +1,9 @@
-package main.java.com.gestionhotel.utils;
+package com.gestionhotel.utils;
 
 import java.time.LocalDate;
 import java.util.regex.Pattern;
 
-import main.java.com.gestionhotel.exceptions.ValidationException;
+import com.gestionhotel.exceptions.ValidationException;
 
 public class ValidationUtils {
 

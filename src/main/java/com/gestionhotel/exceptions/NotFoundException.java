@@ -1,4 +1,4 @@
-package main.java.com.gestionhotel.exceptions;
+package com.gestionhotel.exceptions;
 
 public class NotFoundException extends HotelException {
 
