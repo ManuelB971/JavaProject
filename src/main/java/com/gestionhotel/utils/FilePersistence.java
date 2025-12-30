@@ -1,4 +1,4 @@
-package main.java.com.gestionhotel.utils;
+package com.gestionhotel.utils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -6,14 +6,14 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import main.java.com.gestionhotel.core.Hotel;
-import main.java.com.gestionhotel.model.Chambre;
-import main.java.com.gestionhotel.model.ChambreSimple;
-import main.java.com.gestionhotel.model.ChambreDouble;
-import main.java.com.gestionhotel.model.Suite;
-import main.java.com.gestionhotel.model.Client;
-import main.java.com.gestionhotel.model.Reservation;
-import main.java.com.gestionhotel.model.Service;
+import com.gestionhotel.core.Hotel;
+import com.gestionhotel.model.Chambre;
+import com.gestionhotel.model.ChambreSimple;
+import com.gestionhotel.model.ChambreDouble;
+import com.gestionhotel.model.Suite;
+import com.gestionhotel.model.Client;
+import com.gestionhotel.model.Reservation;
+import com.gestionhotel.model.Service;
 
 /**
  * Classe utilitaire pour la persistance des données de l'hôtel.

@@ -1,11 +1,11 @@
-package main.java.com.gestionhotel.core;
+package com.gestionhotel.core;
 
 import java.util.HashMap;
 import java.util.Map;
-import main.java.com.gestionhotel.model.Chambre;
-import main.java.com.gestionhotel.model.Client;
-import main.java.com.gestionhotel.model.Reservation;
-import main.java.com.gestionhotel.model.Service;
+import com.gestionhotel.model.Chambre;
+import com.gestionhotel.model.Client;
+import com.gestionhotel.model.Reservation;
+import com.gestionhotel.model.Service;
 
 /**
  * Classe utilitaire pour calculer et afficher les statistiques de l'hôtel.

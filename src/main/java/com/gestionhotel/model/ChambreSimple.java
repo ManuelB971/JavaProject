@@ -1,4 +1,4 @@
-package main.java.com.gestionhotel.model;
+package com.gestionhotel.model;
 
 public class ChambreSimple extends Chambre {
 

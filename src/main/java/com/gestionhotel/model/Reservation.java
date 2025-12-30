@@ -1,7 +1,7 @@
-package main.java.com.gestionhotel.model;
+package com.gestionhotel.model;
 
 import java.util.ArrayList;
-import main.java.com.gestionhotel.utils.DateUtils;
+import com.gestionhotel.utils.DateUtils;
 import java.time.LocalDate;
 
 /**
