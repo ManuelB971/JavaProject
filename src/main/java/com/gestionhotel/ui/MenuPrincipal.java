@@ -3,6 +3,7 @@ package main.java.com.gestionhotel.ui;
 import java.util.ArrayList;
 import java.util.Scanner;
 import main.java.com.gestionhotel.core.Hotel;
+import main.java.com.gestionhotel.core.Statistiques;
 import main.java.com.gestionhotel.model.Chambre;
 import main.java.com.gestionhotel.model.ChambreSimple;
 import main.java.com.gestionhotel.model.ChambreDouble;
@@ -22,6 +23,7 @@ public class MenuPrincipal {
     private Hotel hotel;
     private Scanner scanner;
     private boolean running;
+    private Statistiques statistiques;
 
     /**
      * Constructeur du menu principal.
@@ -32,6 +34,7 @@ public class MenuPrincipal {
         this.hotel = hotel;
         this.scanner = new Scanner(System.in);
         this.running = true;
+        this.statistiques = new Statistiques(hotel);
     }
 
     /**
@@ -705,7 +708,7 @@ public class MenuPrincipal {
                     afficherTauxOccupation();
                     break;
                 case 3:
-                    System.out.println("Fonctionnalité à implémenter par Dev 4.");
+                    afficherChambreLaPlusReservee();
                     break;
                 case 4:
                     afficherStatistiquesCompletes();
@@ -723,12 +726,7 @@ public class MenuPrincipal {
      * Affiche le chiffre d'affaires total.
      */
     private void afficherChiffreAffaires() {
-        double ca = 0;
-        for (Reservation r : hotel.getReservations()) {
-            if (!r.getStatut().equals("Annulée")) {
-                ca += r.calculerPrixTotal();
-            }
-        }
+        double ca = statistiques.calculerChiffreAffaires();
         System.out.println("Chiffre d'affaires total : " + String.format("%.2f", ca) + "€");
     }
 
@@ -736,31 +734,35 @@ public class MenuPrincipal {
      * Affiche le taux d'occupation.
      */
     private void afficherTauxOccupation() {
+        double taux = statistiques.calculerTauxOccupation();
         int total = hotel.getChambres().size();
-        if (total == 0) {
-            System.out.println("Aucune chambre enregistrée.");
-            return;
-        }
         int occupees = 0;
         for (Chambre c : hotel.getChambres()) {
             if (c.isOccupee()) {
                 occupees++;
             }
         }
-        double taux = (double) occupees / total * 100;
         System.out.println("Taux d'occupation : " + String.format("%.1f", taux) + "% (" + occupees + "/" + total + " chambres)");
+    }
+
+    /**
+     * Affiche la chambre la plus réservée.
+     */
+    private void afficherChambreLaPlusReservee() {
+        Chambre chambre = statistiques.trouverChambreLaPlusReservee();
+        if (chambre != null) {
+            System.out.println("Chambre la plus réservée :");
+            System.out.println(chambre);
+        } else {
+            System.out.println("Aucune réservation enregistrée.");
+        }
     }
 
     /**
      * Affiche les statistiques complètes.
      */
     private void afficherStatistiquesCompletes() {
-        System.out.println("\n========== STATISTIQUES ==========");
-        System.out.println(hotel);
-        System.out.println("-----------------------------------");
-        afficherChiffreAffaires();
-        afficherTauxOccupation();
-        System.out.println("===================================");
+        statistiques.afficherRapportComplet();
     }
 }
 
