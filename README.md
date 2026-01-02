@@ -75,7 +75,7 @@ src/
 ## Répartition du Travail
 
 Projet réalisé en équipe avec répartition.
-| Phase                 | Mika (Dev 1)                  | Yann (Dev 2)                  | Manuel (Dev 3)                     | Dominique (Dev 4)               | Tests Croisés (TOUS)                                          |
+| Phase                 | Mika (Dev 1)                  | Manuel (Dev 2)                  | Yann (Dev 3)                     | Dominique (Dev 4)               | Tests Croisés (TOUS)                                          |
 | --------------------- | ----------------------------- | ----------------------------- | --------------------------------- | ------------------------------- | ------------------------------------------------------------- |
 | Phase 1: Model        | Chambre abstraite + interfaces | ChambreSimple/Double          | Suite + Client(email validation)  | Service + DateUtils              | D1 teste D2, D2 teste D3, D3 teste D4, D4 teste D1            |
 | Phase 2: Réservations | Reservation(prix/nuits/services) | Intégration Client/Chambre    | Statut + annulation               | ValidationUtils + Exceptions     | Rotation : D1 teste D3, D2 teste D4, D3 teste D1, D4 teste D2 |

@@ -39,21 +39,43 @@ public class MenuPrincipal {
 
     /**
      * Démarre l'application et affiche le menu principal.
+     * Inclut un try-catch global pour la gestion robuste des erreurs.
      */
     public void demarrer() {
-        System.out.println("╔════════════════════════════════════════╗");
-        System.out.println("║   SYSTÈME DE GESTION D'HÔTEL           ║");
-        System.out.println("║   " + hotel.getNom() + "                          ║");
-        System.out.println("╚════════════════════════════════════════╝");
+        try {
+            System.out.println("╔════════════════════════════════════════╗");
+            System.out.println("║   SYSTÈME DE GESTION D'HÔTEL           ║");
+            System.out.println("║   " + hotel.getNom() + "                          ║");
+            System.out.println("╚════════════════════════════════════════╝");
 
-        while (running) {
-            afficherMenuPrincipal();
-            int choix = lireChoix();
-            traiterChoixPrincipal(choix);
+            while (running) {
+                try {
+                    afficherMenuPrincipal();
+                    int choix = lireChoix();
+                    traiterChoixPrincipal(choix);
+                } catch (NumberFormatException e) {
+                    System.out.println("⚠️  Erreur : Veuillez entrer un nombre valide.");
+                } catch (IllegalArgumentException e) {
+                    System.out.println("⚠️  Erreur : " + e.getMessage());
+                } catch (NullPointerException e) {
+                    System.out.println("⚠️  Erreur : Donnée introuvable ou null.");
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    System.out.println("⚠️  Une erreur inattendue s'est produite : " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+
+            System.out.println("\nMerci d'avoir utilisé le système. Au revoir !");
+        } catch (Exception e) {
+            System.err.println("❌ Erreur critique lors du démarrage du menu :");
+            e.printStackTrace();
+        } finally {
+            // Fermeture des ressources
+            if (scanner != null) {
+                scanner.close();
+            }
         }
-
-        System.out.println("Merci d'avoir utilisé le système. Au revoir !");
-        scanner.close();
     }
 
     /**
@@ -72,14 +94,23 @@ public class MenuPrincipal {
     }
 
     /**
-     * Lit le choix de l'utilisateur.
+     * Lit le choix de l'utilisateur avec gestion d'erreur robuste.
      * 
-     * @return Le choix saisi
+     * @return Le choix saisi, ou -1 en cas d'erreur
      */
     private int lireChoix() {
         try {
-            return Integer.parseInt(scanner.nextLine().trim());
+            String input = scanner.nextLine().trim();
+            if (input.isEmpty()) {
+                System.out.println("⚠️  Veuillez entrer une valeur.");
+                return -1;
+            }
+            return Integer.parseInt(input);
         } catch (NumberFormatException e) {
+            System.out.println("⚠️  Veuillez entrer un nombre valide.");
+            return -1;
+        } catch (Exception e) {
+            System.out.println("⚠️  Erreur lors de la lecture : " + e.getMessage());
             return -1;
         }
     }
@@ -306,27 +337,46 @@ public class MenuPrincipal {
     }
 
     /**
-     * Ajoute un nouveau client.
+     * Ajoute un nouveau client avec validation robuste.
      */
     private void ajouterClient() {
-        System.out.println("\n--- Ajouter un client ---");
-        System.out.print("Nom : ");
-        String nom = scanner.nextLine().trim();
-        System.out.print("Prénom : ");
-        String prenom = scanner.nextLine().trim();
-        System.out.print("Email : ");
-        String email = scanner.nextLine().trim();
-        System.out.print("Téléphone : ");
-        String telephone = scanner.nextLine().trim();
+        try {
+            System.out.println("\n--- Ajouter un client ---");
+            System.out.print("Nom : ");
+            String nom = scanner.nextLine().trim();
+            if (nom.isEmpty()) {
+                System.out.println("⚠️  Le nom ne peut pas être vide.");
+                return;
+            }
 
-        Client client = new Client(nom, prenom, email, telephone);
-        
-        if (!client.validerEmail()) {
-            System.out.println("Attention: L'email semble invalide.");
+            System.out.print("Prénom : ");
+            String prenom = scanner.nextLine().trim();
+            if (prenom.isEmpty()) {
+                System.out.println("⚠️  Le prénom ne peut pas être vide.");
+                return;
+            }
+
+            System.out.print("Email : ");
+            String email = scanner.nextLine().trim();
+            if (email.isEmpty()) {
+                System.out.println("⚠️  L'email ne peut pas être vide.");
+                return;
+            }
+
+            System.out.print("Téléphone : ");
+            String telephone = scanner.nextLine().trim();
+
+            Client client = new Client(nom, prenom, email, telephone);
+            
+            if (!client.validerEmail()) {
+                System.out.println("⚠️  Attention: L'email semble invalide.");
+            }
+            
+            hotel.ajouterClient(client);
+            System.out.println("✅ Client ajouté avec succès : " + client);
+        } catch (Exception e) {
+            System.out.println("❌ Erreur lors de l'ajout du client : " + e.getMessage());
         }
-        
-        hotel.ajouterClient(client);
-        System.out.println("Client ajouté avec succès : " + client);
     }
 
     /**
@@ -464,44 +514,59 @@ public class MenuPrincipal {
     }
 
     /**
-     * Crée une nouvelle réservation.
+     * Crée une nouvelle réservation avec validation robuste.
      */
     private void creerReservation() {
-        System.out.println("\n--- Créer une réservation ---");
-        
-        // Sélection du client
-        System.out.print("Numéro du client : ");
-        int numClient = lireChoix();
-        Client client = hotel.rechercherClient(numClient);
-        if (client == null) {
-            System.out.println("Client non trouvé. Veuillez d'abord créer le client.");
-            return;
-        }
+        try {
+            System.out.println("\n--- Créer une réservation ---");
+            
+            // Sélection du client
+            System.out.print("Numéro du client : ");
+            int numClient = lireChoix();
+            Client client = hotel.rechercherClient(numClient);
+            if (client == null) {
+                System.out.println("❌ Client non trouvé. Veuillez d'abord créer le client.");
+                return;
+            }
 
-        // Afficher les chambres disponibles
-        hotel.afficherChambresDisponibles();
-        System.out.print("Numéro de la chambre : ");
-        int numChambre = lireChoix();
-        Chambre chambre = hotel.rechercherChambre(numChambre);
-        if (chambre == null) {
-            System.out.println("Chambre non trouvée.");
-            return;
-        }
-        if (chambre.isOccupee()) {
-            System.out.println("Cette chambre est déjà occupée.");
-            return;
-        }
+            // Afficher les chambres disponibles
+            hotel.afficherChambresDisponibles();
+            System.out.print("Numéro de la chambre : ");
+            int numChambre = lireChoix();
+            Chambre chambre = hotel.rechercherChambre(numChambre);
+            if (chambre == null) {
+                System.out.println("❌ Chambre non trouvée.");
+                return;
+            }
+            if (chambre.isOccupee()) {
+                System.out.println("❌ Cette chambre est déjà occupée.");
+                return;
+            }
 
-        // Dates
-        System.out.print("Date d'arrivée (jj/mm/aaaa) : ");
-        String dateDebut = scanner.nextLine().trim();
-        System.out.print("Date de départ (jj/mm/aaaa) : ");
-        String dateFin = scanner.nextLine().trim();
+            // Dates
+            System.out.print("Date d'arrivée (jj/mm/aaaa) : ");
+            String dateDebut = scanner.nextLine().trim();
+            if (dateDebut.isEmpty()) {
+                System.out.println("⚠️  La date d'arrivée ne peut pas être vide.");
+                return;
+            }
 
-        Reservation reservation = hotel.creerReservation(client, chambre, dateDebut, dateFin);
-        if (reservation != null) {
-            System.out.println("Réservation créée avec succès !");
-            System.out.println(reservation);
+            System.out.print("Date de départ (jj/mm/aaaa) : ");
+            String dateFin = scanner.nextLine().trim();
+            if (dateFin.isEmpty()) {
+                System.out.println("⚠️  La date de départ ne peut pas être vide.");
+                return;
+            }
+
+            Reservation reservation = hotel.creerReservation(client, chambre, dateDebut, dateFin);
+            if (reservation != null) {
+                System.out.println("✅ Réservation créée avec succès !");
+                System.out.println(reservation);
+            } else {
+                System.out.println("❌ Erreur lors de la création de la réservation.");
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Erreur lors de la création de la réservation : " + e.getMessage());
         }
     }
 
@@ -696,7 +761,8 @@ public class MenuPrincipal {
             System.out.println("2. Afficher le taux d'occupation");
             System.out.println("3. Afficher la chambre la plus réservée");
             System.out.println("4. Afficher les statistiques complètes");
-            System.out.println("5. Retour au menu principal");
+            System.out.println("5. Consulter la fidélité d'un client");
+            System.out.println("6. Retour au menu principal");
             System.out.print("Votre choix : ");
 
             int choix = lireChoix();
@@ -714,6 +780,9 @@ public class MenuPrincipal {
                     afficherStatistiquesCompletes();
                     break;
                 case 5:
+                    afficherMenuFidelite();
+                    break;
+                case 6:
                     retour = true;
                     break;
                 default:
@@ -764,5 +833,82 @@ public class MenuPrincipal {
     private void afficherStatistiquesCompletes() {
         statistiques.afficherRapportComplet();
     }
-}
 
+    // ===========================
+    // BONUS : FIDÉLITÉ CLIENT (Dev 3)
+    // ===========================
+
+    /**
+     * Affiche les options de fidélité client.
+     */
+    public void afficherMenuFidelite() {
+        try {
+            System.out.println("\n----- Programme de Fidélité -----");
+            System.out.print("Numéro du client : ");
+            int numClient = lireChoix();
+            Client client = hotel.rechercherClient(numClient);
+            
+            if (client == null) {
+                System.out.println("❌ Client non trouvé.");
+                return;
+            }
+
+            // Compter les réservations du client
+            int nombreReservations = 0;
+            double depenseTotal = 0.0;
+            
+            for (Reservation res : hotel.getReservations()) {
+                if (res.getClient().getNumeroClient() == numClient && !res.estAnnulee()) {
+                    nombreReservations++;
+                    depenseTotal += res.calculerPrixTotal();
+                }
+            }
+
+            System.out.println("\n=== Informations Fidélité pour " + client.getNomComplet() + " ===");
+            System.out.println("Nombre de réservations : " + nombreReservations);
+            System.out.println("Dépense totale : " + String.format("%.2f", depenseTotal) + "€");
+            
+            // Calcul des avantages fidélité
+            double reduction = 0.0;
+            String statut = "Bronze";
+            
+            if (nombreReservations >= 5) {
+                reduction = 15.0;
+                statut = "Platine";
+            } else if (nombreReservations >= 3) {
+                reduction = 10.0;
+                statut = "Or";
+            } else if (nombreReservations >= 1) {
+                reduction = 5.0;
+                statut = "Argent";
+            }
+
+            System.out.println("Statut de fidélité : " + statut);
+            System.out.println("Réduction applicable : " + reduction + "%");
+            
+            if (reduction > 0) {
+                double economies = depenseTotal * (reduction / 100.0);
+                System.out.println("💰 Économies réalisées : " + String.format("%.2f", economies) + "€");
+            }
+
+            // Proposer des offres spéciales
+            if (nombreReservations >= 1) {
+                System.out.println("\n✨ Offres spéciales disponibles :");
+                if (nombreReservations >= 1) {
+                    System.out.println("  • Upgrade gratuit vers une chambre supérieure");
+                }
+                if (nombreReservations >= 3) {
+                    System.out.println("  • Séjour gratuit pour toute réservation de 5+ nuits");
+                    System.out.println("  • Service de conciergerie offert");
+                }
+                if (nombreReservations >= 5) {
+                    System.out.println("  • Suite offerte pour 1 nuit par an");
+                    System.out.println("  • Petit-déjeuner gratuit illimité");
+                    System.out.println("  • Service VIP prioritaire");
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Erreur lors de la vérification de fidélité : " + e.getMessage());
+        }
+    }
+}

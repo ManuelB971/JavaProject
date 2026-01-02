@@ -1,0 +1,20 @@
+{
+  "java.project.sourceCollections": [
+    "src/main/java",
+    "src/test/java"
+  ],
+  "java.project.referencedLibraries": [
+    "lib/**/*.jar"
+  ],
+  "java.test.config": {
+    "name": "JUnit",
+    "workingDirectory": "${workspaceFolder}"
+  },
+  "[java]": {
+    "editor.defaultFormatter": "redhat.java",
+    "editor.formatOnSave": false
+  },
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.dependency.packagePresentation": "hierarchical",
+  "maven.executable.preferMavenWrapper": true
+}
