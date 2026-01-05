@@ -1,74 +1,238 @@
-# JavaProject le repo des boss
+# 🏨 Système de Gestion d'Hôtel - Projet Java B3
 
-# Projet Java -- Système de Gestion d'Hôtel
+Application Java complète de gestion d'hôtel avec interface graphique Swing, base de données SQLite, et système de fidélité.
 
-Ce projet consiste à développer une application Java de gestion complète
-d'un hôtel avec gestion des chambres, des clients, des réservations, des
-services ainsi que des statistiques.
+## 📋 Table des matières
 
-------------------------------------------------------------------------
+- [Fonctionnalités](#-fonctionnalités)
+- [Structure du projet](#-structure-du-projet)
+- [Installation et lancement](#-installation-et-lancement)
+- [Architecture](#-architecture)
+- [Phases du projet](#-phases-du-projet)
+- [Technologies utilisées](#-technologies-utilisées)
+- [Tests](#-tests)
+
+## ✨ Fonctionnalités
+
+### Gestion des chambres
+- ✅ Création et gestion de chambres (Simple, Double, Suite)
+- ✅ Génération automatique de numéros de chambres (format : HTLXXXXX)
+- ✅ Recherche par type, prix, disponibilité
+- ✅ Gestion de l'occupation
+
+### Gestion des clients
+- ✅ Création et modification de clients
+- ✅ Validation des emails
+- ✅ Système de fidélité (Bronze, Argent, Or, Platine)
+- ✅ Calcul automatique des réductions
+
+### Gestion des réservations
+- ✅ Création de réservations avec validation des dates
+- ✅ Calcul automatique des prix (chambre + services)
+- ✅ Application des réductions de fidélité
+- ✅ Gestion des statuts (En cours, Confirmée, Annulée, Terminée)
+- ✅ Annulation avec raison
+
+### Gestion des services
+- ✅ Ajout de services supplémentaires (petit-déjeuner, spa, parking, etc.)
+- ✅ Gestion de la disponibilité
+
+### Statistiques
+- ✅ Taux d'occupation
+- ✅ Chiffre d'affaires
+- ✅ Statistiques par type de chambre
+- ✅ Statistiques des réservations
+
+### Interface utilisateur
+- ✅ **Interface console** complète avec menus interactifs
+- ✅ **Interface graphique Swing** avec onglets :
+  - Panneau Chambres
+  - Panneau Clients
+  - Panneau Réservations
+  - Panneau Services
+  - Panneau Statistiques
+  - Panneau Fidélité
+
+### Persistance des données
+- ✅ Sauvegarde dans **base de données SQLite**
+- ✅ Compatibilité avec sauvegarde fichiers texte
+- ✅ Migration automatique des fichiers vers SQLite
+- ✅ Initialisation automatique avec données de test
+
+### Système de fidélité
+- ✅ 4 niveaux : Bronze, Argent, Or, Platine
+- ✅ Réductions automatiques : 5%, 10%, 15%
+- ✅ Calcul des économies réalisées
+- ✅ Affichage du statut et des avantages
+
 ## 📁 Structure du projet
 
-```text
-src/
-├── main/
-│   └── java/
-│       └── com/
-│           └── gestionhotel/
-│               ├── model/
-│               │   ├── Chambre.java
-│               │   ├── ChambreSimple.java
-│               │   ├── ChambreDouble.java
-│               │   ├── Suite.java
-│               │   ├── Client.java
-│               │   ├── Service.java
-│               │   └── Reservation.java
-│               ├── core/
-│               │   ├── Hotel.java
-│               │   └── Statistiques.java
-│               ├── utils/
-│               │   ├── DateUtils.java
-│               │   ├── ValidationUtils.java
-│               │   └── FilePersistence.java
-│               └── ui/
-│                   └── MenuPrincipal.java
-├── test/
-│   └── com/
-│       └── gestionhotel/
-│           └── test/
-└── resources/
-    ├── hotel.properties
-    └── services_init.txt
 ```
-------------------------------------------------------------------------
+JavaProject/
+├── src/
+│   ├── main/
+│   │   └── java/
+│   │       └── com/
+│   │           └── gestionhotel/
+│   │               ├── core/              # Classes métier principales
+│   │               │   ├── Hotel.java
+│   │               │   └── Statistiques.java
+│   │               ├── model/             # Modèles de données
+│   │               │   ├── Chambre.java (abstraite)
+│   │               │   ├── ChambreSimple.java
+│   │               │   ├── ChambreDouble.java
+│   │               │   ├── Suite.java
+│   │               │   ├── Client.java
+│   │               │   ├── Reservation.java
+│   │               │   ├── Service.java
+│   │               │   └── GestionnaireClient.java
+│   │               ├── exceptions/        # Exceptions personnalisées
+│   │               │   ├── HotelException.java
+│   │               │   ├── BusinessException.java
+│   │               │   ├── ValidationException.java
+│   │               │   └── NotFoundException.java
+│   │               ├── utils/             # Utilitaires
+│   │               │   ├── DateUtils.java
+│   │               │   ├── ValidationUtils.java
+│   │               │   ├── FilePersistence.java
+│   │               │   ├── SQLiteDatabaseManager.java
+│   │               │   ├── FideliteManager.java
+│   │               │   └── DataInitializer.java
+│   │               └── ui/                # Interfaces utilisateur
+│   │                   ├── MenuPrincipal.java (console)
+│   │                   ├── FenetrePrincipale.java (Swing)
+│   │                   ├── PanneauChambres.java
+│   │                   ├── PanneauClients.java
+│   │                   ├── PanneauReservations.java
+│   │                   ├── PanneauServices.java
+│   │                   ├── PanneauStatistiques.java
+│   │                   ├── PanneauFidelite.java
+│   │                   └── SwingUtils.java
+│   └── test/
+│       └── java/
+│           └── com/
+│               └── gestionhotel/
+│                   ├── model/
+│                   │   └── TestGestionnaireClient.java
+│                   └── utils/
+│                       └── TestSQLiteDatabaseManager.java
+├── data/                                  # Données persistantes
+│   └── hotel.db                           # Base SQLite
+├── lib/                                   # Dépendances
+│   ├── sqlite-jdbc-*.jar
+│   ├── slf4j-*.jar
+│   └── junit-*.jar
+├── lancer.sh                             # Script de lancement (Linux/Mac)
+├── lancer.bat                            # Script de lancement (Windows)
+└── README.md
+```
 
-## Phases du Projet
+## 🚀 Installation et lancement
+
+### Prérequis
+- Java JDK 8 ou supérieur
+- Bash (Linux/Mac) ou PowerShell (Windows)
+
+### Lancement rapide
+
+**Linux/Mac :**
+```bash
+chmod +x lancer.sh
+./lancer.sh
+```
+
+**Windows :**
+```cmd
+lancer.bat
+```
+
+Le script va automatiquement :
+1. ✅ Vérifier Java
+2. ✅ Télécharger les dépendances (SQLite JDBC, SLF4J, JUnit)
+3. ✅ Compiler le projet
+4. ✅ Initialiser la base de données
+5. ✅ Lancer l'application (Swing par défaut)
+
+### Modes de lancement
+
+- **Interface graphique Swing** (par défaut) : `./lancer.sh`
+- **Interface console** : `./lancer.sh console`
+
+### Initialisation des données
+
+Les données de test sont **automatiquement initialisées** lors du premier lancement si la base de données est vide. Elles incluent :
+- 14 chambres (Simple, Double, Suite)
+- 8 clients
+- 8 services
+- ~15 réservations avec différents statuts
+
+## 🏗️ Architecture
+
+### Design Patterns utilisés
+- **Singleton** : `SQLiteDatabaseManager`
+- **Factory** : Création de chambres par type
+- **MVC** : Séparation Model-View-Controller (implicite)
+- **Strategy** : Calcul des prix selon le type de chambre
+
+### Gestion des erreurs
+- ✅ Try-catch global dans `Main.java`
+- ✅ Exceptions personnalisées (`HotelException`, `ValidationException`, etc.)
+- ✅ Validation des données avec `ValidationUtils`
+- ✅ Gestion robuste des erreurs SQL
+
+### Persistance
+- ✅ **SQLite** : Base de données relationnelle principale
+- ✅ **Fichiers texte** : Compatibilité et migration automatique
+- ✅ Sauvegarde automatique à la fermeture
+
+## 📚 Phases du projet
 
 ### Phase 1 : Classes de base
-
--   Gestion des chambres, clients et services
+- Modélisation des chambres (abstraction, héritage)
+- Gestion des clients avec validation
+- Services hôteliers
 
 ### Phase 2 : Réservations
-
--   Création, calculs, annulation
+- Création et gestion des réservations
+- Calculs de prix (chambre + services)
+- Gestion des statuts et annulations
 
 ### Phase 3 : Classe Hotel
+- Gestion globale de l'hôtel
+- Recherches et filtres
+- Statistiques complètes
 
--   Gestion globale et statistiques
+### Phase 4 : Interface utilisateur + Bonus
+- Menu console interactif
+- **Interface graphique Swing complète**
+- **Système de fidélité avec réductions**
+- **Persistance SQLite**
+- Gestion d'erreurs robuste
 
-### Phase 4 : Menu interactif
+## 🛠️ Technologies utilisées
 
--   Interface console complète
+- **Java** : Langage de programmation
+- **Swing** : Interface graphique
+- **SQLite** : Base de données embarquée
+- **JUnit 4** : Tests unitaires
+- **SLF4J** : Logging
 
-------------------------------------------------------------------------
+## 🧪 Tests
 
-## Fonctionnalités
+### Exécution des tests
 
--   Gestion chambres, clients, réservations
--   Ajout services
--   Statistiques
--   Sauvegarde fichiers
--   Menu interactif
+```bash
+# Compiler les tests
+javac -d build -cp ".:lib/*" src/test/java/com/gestionhotel/**/*.java
+
+# Exécuter les tests
+java -cp "build:lib/*" org.junit.runner.JUnitCore com.gestionhotel.utils.TestSQLiteDatabaseManager
+```
+
+### Couverture des tests
+- ✅ Tests unitaires pour `SQLiteDatabaseManager`
+- ✅ Tests pour `GestionnaireClient`
+- ⚠️ Tests à ajouter : `Hotel`, `Reservation`, `FideliteManager`
 
 ------------------------------------------------------------------------
 

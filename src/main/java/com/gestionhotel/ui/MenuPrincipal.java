@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import com.gestionhotel.core.Hotel;
 import com.gestionhotel.core.Statistiques;
+import com.gestionhotel.utils.FideliteManager;
 import com.gestionhotel.model.Chambre;
 import com.gestionhotel.model.ChambreSimple;
 import com.gestionhotel.model.ChambreDouble;
@@ -558,7 +559,7 @@ public class MenuPrincipal {
                 return;
             }
 
-            Reservation reservation = hotel.creerReservation(client, chambre, dateDebut, dateFin);
+            Reservation reservation = hotel.creerReservationAvecFidelite(client, chambre, dateDebut, dateFin);
             if (reservation != null) {
                 System.out.println("✅ Réservation créée avec succès !");
                 System.out.println(reservation);
@@ -853,42 +854,29 @@ public class MenuPrincipal {
                 return;
             }
 
-            // Compter les réservations du client
-            int nombreReservations = 0;
-            double depenseTotal = 0.0;
-            
-            for (Reservation res : hotel.getReservations()) {
-                if (res.getClient().getNumeroClient() == numClient && !res.estAnnulee()) {
-                    nombreReservations++;
-                    depenseTotal += res.calculerPrixTotal();
-                }
-            }
+            // Utiliser FideliteManager pour obtenir les informations
+            int nombreReservations = FideliteManager.obtenirNombreReservations(client, hotel);
+            double depenseTotale = FideliteManager.obtenirDepenseTotale(client, hotel);
+            String statut = FideliteManager.calculerStatutFidelite(client, hotel);
+            double reduction = FideliteManager.calculerReduction(client, hotel);
+            double economies = FideliteManager.calculerEconomiesTotales(client, hotel);
+            int reservationsPourNiveauSuperieur = FideliteManager.obtenirReservationsPourNiveauSuperieur(client, hotel);
 
             System.out.println("\n=== Informations Fidélité pour " + client.getNomComplet() + " ===");
             System.out.println("Nombre de réservations : " + nombreReservations);
-            System.out.println("Dépense totale : " + String.format("%.2f", depenseTotal) + "€");
-            
-            // Calcul des avantages fidélité
-            double reduction = 0.0;
-            String statut = "Bronze";
-            
-            if (nombreReservations >= 5) {
-                reduction = 15.0;
-                statut = "Platine";
-            } else if (nombreReservations >= 3) {
-                reduction = 10.0;
-                statut = "Or";
-            } else if (nombreReservations >= 1) {
-                reduction = 5.0;
-                statut = "Argent";
-            }
-
+            System.out.println("Dépense totale : " + String.format("%.2f", depenseTotale) + "€");
             System.out.println("Statut de fidélité : " + statut);
-            System.out.println("Réduction applicable : " + reduction + "%");
+            System.out.println("Réduction applicable : " + String.format("%.1f", reduction) + "%");
             
             if (reduction > 0) {
-                double economies = depenseTotal * (reduction / 100.0);
                 System.out.println("💰 Économies réalisées : " + String.format("%.2f", economies) + "€");
+            }
+            
+            if (reservationsPourNiveauSuperieur > 0) {
+                System.out.println("📈 Progression : " + reservationsPourNiveauSuperieur + 
+                    " réservation(s) pour atteindre le niveau supérieur");
+            } else if (statut.equals("Platine")) {
+                System.out.println("🏆 Niveau maximum atteint !");
             }
 
             // Proposer des offres spéciales

@@ -6,6 +6,7 @@ import com.gestionhotel.model.Client;
 import com.gestionhotel.model.Reservation;
 import com.gestionhotel.model.Service;
 import com.gestionhotel.model.GestionnaireClient;
+import com.gestionhotel.utils.FideliteManager;
 
 /**
  * Classe principale représentant l'hôtel.
@@ -79,6 +80,126 @@ public class Hotel {
     // ===========================
     // MÉTHODES DE GESTION DES CHAMBRES (Phase 3 - Dev 1)
     // ===========================
+
+    /**
+     * Génère le préfixe de code chambre à partir du nom de l'hôtel.
+     * Ignore les articles (L', Le, La, Les, The, etc.) et prend les 3 premières lettres
+     * du premier mot significatif en majuscules.
+     * 
+     * Exemples :
+     * - "L'hotel le magnifique" → "HTL" (Hotel)
+     * - "Hilton" → "HTL" (Hilton)
+     * - "Le Grand Hôtel" → "GRD" (Grand)
+     * 
+     * @return Le préfixe (ex: "HTL" pour "L'hotel le magnifique")
+     */
+    public String genererPrefixeChambre() {
+        if (nom == null || nom.trim().isEmpty()) {
+            return "HTL"; // Par défaut
+        }
+        
+        // Liste des articles à ignorer (français et anglais)
+        String[] articles = {"L'", "LE ", "LA ", "LES ", "THE ", "A ", "AN "};
+        String nomNettoye = nom.trim().toUpperCase();
+        
+        // Supprimer les articles au début
+        for (String article : articles) {
+            if (nomNettoye.startsWith(article)) {
+                nomNettoye = nomNettoye.substring(article.length()).trim();
+                break;
+            }
+        }
+        
+        // Extraire les lettres uniquement du premier mot significatif
+        String[] mots = nomNettoye.split("[^A-Z]+");
+        String premierMot = "";
+        for (String mot : mots) {
+            if (mot.length() >= 2) { // Ignorer les mots trop courts
+                premierMot = mot;
+                break;
+            }
+        }
+        
+        // Si aucun mot significatif trouvé, prendre les 3 premières lettres du nom nettoyé
+        if (premierMot.isEmpty()) {
+            premierMot = nomNettoye.replaceAll("[^A-Z]", "");
+        }
+        
+        // Prendre les 3 premières lettres
+        if (premierMot.length() >= 3) {
+            return premierMot.substring(0, 3);
+        } else if (premierMot.length() > 0) {
+            // Si moins de 3 lettres, compléter avec des X
+            return String.format("%-3s", premierMot).replace(' ', 'X').substring(0, 3);
+        }
+        
+        return "HTL"; // Par défaut
+    }
+
+    /**
+     * Génère le prochain numéro de chambre disponible.
+     * Le format est : PREFIXE + numéro séquentiel sur 5 chiffres (ex: HTL00001, HTL00002)
+     * 
+     * @return Le prochain numéro de chambre disponible
+     */
+    public int genererProchainNumeroChambre() {
+        int maxNumero = 0;
+        
+        // Parcourir toutes les chambres existantes pour trouver le numéro maximum
+        for (Chambre chambre : chambres) {
+            int numero = chambre.getNumero();
+            // Extraire le numéro séquentiel (les 5 derniers chiffres)
+            int numeroSeq = numero % 100000;
+            if (numeroSeq > maxNumero) {
+                maxNumero = numeroSeq;
+            }
+        }
+        
+        return maxNumero + 1;
+    }
+
+    /**
+     * Formate un numéro de chambre avec le préfixe de l'hôtel.
+     * 
+     * @param numero Le numéro interne de la chambre
+     * @return Le numéro formaté (ex: "HTL00001")
+     */
+    public String formaterNumeroChambre(int numero) {
+        String prefixe = genererPrefixeChambre();
+        return String.format("%s%05d", prefixe, numero);
+    }
+
+    /**
+     * Parse un numéro de chambre formaté pour obtenir le numéro interne.
+     * 
+     * @param numeroFormate Le numéro formaté (ex: "HTL00001")
+     * @return Le numéro interne, ou -1 si le format est invalide
+     */
+    public int parserNumeroChambre(String numeroFormate) {
+        if (numeroFormate == null || numeroFormate.trim().isEmpty()) {
+            return -1;
+        }
+        
+        String prefixe = genererPrefixeChambre();
+        String numeroStr = numeroFormate.trim().toUpperCase();
+        
+        // Vérifier si le numéro commence par le préfixe
+        if (numeroStr.startsWith(prefixe)) {
+            try {
+                String numeroSeq = numeroStr.substring(prefixe.length());
+                return Integer.parseInt(numeroSeq);
+            } catch (NumberFormatException e) {
+                return -1;
+            }
+        }
+        
+        // Si pas de préfixe, essayer de parser directement comme nombre
+        try {
+            return Integer.parseInt(numeroStr);
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
 
     /**
      * Ajoute une chambre à l'hôtel.
@@ -276,6 +397,40 @@ public class Hotel {
         this.reservations.add(reservation);
         
         System.out.println("✓ Réservation n°" + reservation.getNumeroReservation() + " créée avec succès.");
+        return reservation;
+    }
+
+    /**
+     * Crée une nouvelle réservation avec application automatique de la réduction de fidélité (Phase 4 - Dev 4).
+     * Identique à creerReservation() mais affiche également le prix avec réduction de fidélité.
+     * 
+     * @param client    Le client
+     * @param chambre   La chambre
+     * @param dateDebut Date de début (format jj/mm/aaaa)
+     * @param dateFin   Date de fin (format jj/mm/aaaa)
+     * @return La réservation créée ou null en cas d'erreur
+     */
+    public Reservation creerReservationAvecFidelite(Client client, Chambre chambre, String dateDebut, String dateFin) {
+        Reservation reservation = creerReservation(client, chambre, dateDebut, dateFin);
+        
+        if (reservation != null) {
+            double prixSansReduction = reservation.calculerPrixTotal();
+            double prixAvecReduction = reservation.calculerPrixTotalAvecFidelite(this);
+            double reduction = FideliteManager.calculerReduction(client, this);
+            String statut = FideliteManager.calculerStatutFidelite(client, this);
+            
+            System.out.println("Prix total : " + String.format("%.2f", prixSansReduction) + "€");
+            
+            if (reduction > 0) {
+                double economie = prixSansReduction - prixAvecReduction;
+                System.out.println("Statut fidélité : " + statut + " (-" + String.format("%.1f", reduction) + "%)");
+                System.out.println("Réduction appliquée : -" + String.format("%.2f", economie) + "€");
+                System.out.println("Prix final avec fidélité : " + String.format("%.2f", prixAvecReduction) + "€");
+            } else {
+                System.out.println("Statut fidélité : " + statut + " (aucune réduction)");
+            }
+        }
+        
         return reservation;
     }
 

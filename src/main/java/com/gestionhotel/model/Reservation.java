@@ -2,6 +2,8 @@ package com.gestionhotel.model;
 
 import java.util.ArrayList;
 import com.gestionhotel.utils.DateUtils;
+import com.gestionhotel.utils.FideliteManager;
+import com.gestionhotel.core.Hotel;
 import java.time.LocalDate;
 
 /**
@@ -62,6 +64,19 @@ public class Reservation {
 
     public int getNumeroReservation() {
         return numeroReservation;
+    }
+
+    /**
+     * Définit le numéro de réservation (utilisé lors du chargement depuis la base de données).
+     * 
+     * @param numeroReservation Le numéro de réservation à définir
+     */
+    public void setNumeroReservation(int numeroReservation) {
+        this.numeroReservation = numeroReservation;
+        // Mettre à jour le compteur statique pour éviter les conflits
+        if (compteurReservation <= numeroReservation) {
+            compteurReservation = numeroReservation + 1;
+        }
     }
 
     public Client getClient() {
@@ -177,6 +192,21 @@ public class Reservation {
      */
     public double calculerPrixTotal() {
         return calculerPrixChambre() + calculerPrixServices();
+    }
+
+    /**
+     * Calcule le prix total de la réservation avec application de la réduction de fidélité.
+     * Applique automatiquement la réduction correspondant au statut de fidélité du client.
+     * 
+     * @param hotel L'hôtel contenant les informations nécessaires au calcul de fidélité
+     * @return Le prix total après application de la réduction de fidélité
+     */
+    public double calculerPrixTotalAvecFidelite(Hotel hotel) {
+        double prixTotal = calculerPrixTotal();
+        if (hotel != null && client != null) {
+            return FideliteManager.appliquerReductionFidelite(prixTotal, client, hotel);
+        }
+        return prixTotal;
     }
 
     /**

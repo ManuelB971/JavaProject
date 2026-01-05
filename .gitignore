@@ -1,44 +1,33 @@
-# IDE - IntelliJ IDEA
-.idea/
-*.iml
-*.iws
-*.ipr
-*.xml
-# Copilot files
-.idea/copilot.data.migration.*.xml
-.idea/copilot.data.*.xml
-
-# Maven
-target/
-*.jar
-*.war
-*.ear
-.m2/
-
-# Compiled class file
+# Fichiers compilés
+build/
 *.class
-
-# Log file
-*.log
-
-# BlueJ files
-*.ctxt
-
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
-# Package Files
 *.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
+# Base de données
+data/*.db
+data/*.txt
+!data/.gitkeep
 
-# OS files
+# IDE
+.idea/
+.vscode/
+*.iml
+.classpath
+.project
+.settings/
+bin/
+
+# OS
 .DS_Store
 Thumbs.db
+
+# Logs
+*.log
+
+# Fichiers temporaires
+*.tmp
+*.bak
+*~
+
+# Dépendances (optionnel - si vous voulez les versionner, commentez cette ligne)
+# lib/
